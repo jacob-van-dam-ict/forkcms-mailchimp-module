@@ -30,7 +30,7 @@ ajax: function() {
             $.ajax
             ({
                 data: {
-                    fork: {module: 'mailchimp', action: 'Subscription'},
+                    fork: {module: 'Mailchimp', action: 'Subscription'},
                     subscriber: subscriber
                 },
 
