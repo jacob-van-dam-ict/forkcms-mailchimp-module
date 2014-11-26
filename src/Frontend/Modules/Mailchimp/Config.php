@@ -23,7 +23,7 @@ class Config extends FrontendBaseConfig
      *
      * @var	string
      */
-    protected $defaultAction = 'Index';
+    protected $defaultAction = 'Subscribe';
 
     /**
      * The disabled actions
