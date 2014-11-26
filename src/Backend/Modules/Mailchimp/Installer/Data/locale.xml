@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<locale>
+  <Backend>
+    <Core>
+      <item type="label" name="Mailchimp">
+        <translation language="nl"><![CDATA[mailchimp]]></translation>
+        <translation language="en"><![CDATA[mailchimp]]></translation>
+      </item>
+      <item type="label" name="Subscribe">
+        <translation language="nl"><![CDATA[inschrijven]]></translation>
+        <translation language="en"><![CDATA[subscribe]]></translation>
+      </item>
+    </Core>
+    <Mailchimp>
+        <item type="message" name="SelectList">
+            <translation language="nl"><![CDATA[selecteer de email lijst die je wenst te gebruiken.]]></translation>
+            <translation language="en"><![CDATA[select the mailing list you wish to use.]]></translation>
+        </item>
+    </Mailchimp>
+  </Backend>
+  <Frontend>
+    <Core>
+      <item type="label" name="Subscribe">
+        <translation language="nl"><![CDATA[inschrijven]]></translation>
+        <translation language="en"><![CDATA[subscribe]]></translation>
+      </item>
+    </Core>
+    <Mailchimp>
+      <item type="label" name="Newsletter">
+        <translation language="nl"><![CDATA[nieuwsbrief]]></translation>
+        <translation language="en"><![CDATA[newsletter]]></translation>
+      </item>
+      <item type="message" name="FillOutToSubscribe">
+        <translation language="nl"><![CDATA[vul je email adres in om je in te schrijven]]></translation>
+        <translation language="en"><![CDATA[provide us with your email address to subscribe]]></translation>
+      </item>
+    </Mailchimp>
+  </Frontend>
+</locale>

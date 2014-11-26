@@ -1,0 +1,12 @@
+.resultMessage
+{
+    padding: 8px 5px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    background-color:#6BBA70;
+    -webkit-box-shadow: #B3B3B3 3px 3px 3px;
+    -moz-box-shadow: #B3B3B3 3px 3px 3px;
+    box-shadow: #B3B3B3 3px 3px 3px;
+    text-align: center;
+}
