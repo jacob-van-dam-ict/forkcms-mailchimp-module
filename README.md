@@ -27,9 +27,7 @@ public function registerBundles()
 
 ``` yml
 # app/config/config.yml
-zfr_mail_chimp:
-  api_key: #your MailChimp API key here (required)
-  async: #use Guzzle's Asyncronous library (default: false)
+mailchimp.apikey:       yourApiKeyComesHere
 ```
 * App/Config/Config.yml
 
