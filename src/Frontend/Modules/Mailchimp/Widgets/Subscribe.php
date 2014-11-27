@@ -46,7 +46,6 @@ class Subscribe extends FrontendBaseWidget
     private function parse()
     {
         $this->frm->parse($this->tpl);
-        $this->header->addJS('/src/Frontend/Modules/Mailchimp/Js/Mailchimp.js');
         $this->header->addCSS('/src/Frontend/Modules/Mailchimp/Layout/Css/Mailchimp.css');
     }
 }
