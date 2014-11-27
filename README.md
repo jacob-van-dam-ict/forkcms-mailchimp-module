@@ -26,7 +26,6 @@ public function registerBundles()
 * App/Config/Parameters.yml
 
 ``` yml
-# app/config/config.yml
 mailchimp.apikey:       yourApiKeyComesHere
 ```
 * App/Config/Config.yml
