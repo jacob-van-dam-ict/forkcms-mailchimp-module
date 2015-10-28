@@ -19,7 +19,6 @@ use Frontend\Core\Engine\Form as FrontendForm;
  */
 class Subscribe extends FrontendBaseWidget
 {
-
     /**
      * Execute the extra
      */

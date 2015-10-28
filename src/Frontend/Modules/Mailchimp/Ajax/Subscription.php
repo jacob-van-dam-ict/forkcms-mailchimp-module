@@ -1,6 +1,7 @@
 <?php
 
 namespace Frontend\Modules\Mailchimp\Ajax;
+
 /*
 * This file is part of Fork CMS.
 *
@@ -65,8 +66,11 @@ class Subscription extends FrontendBaseAJAXAction
         );
 
         // make the call
-        if($mailchimp->subscribe($data)) $this->output(self::OK);
-        else $this->output(self::OK);
+        if ($mailchimp->subscribe($data)) {
+            $this->output(self::OK);
+        } else {
+            $this->output(self::OK);
+        }
     }
 
     /**
@@ -75,7 +79,11 @@ class Subscription extends FrontendBaseAJAXAction
     private function validateForm()
     {
         // validate
-        if(!\SpoonFilter::isEmail($this->email)) $this->output(self::ERROR);
-        if($this->email == '') $this->output(self::ERROR);
+        if (!\SpoonFilter::isEmail($this->email)) {
+            $this->output(self::ERROR);
+        }
+        if ($this->email == '') {
+            $this->output(self::ERROR);
+        }
     }
 }
