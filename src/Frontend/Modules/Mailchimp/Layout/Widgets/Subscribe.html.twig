@@ -1,0 +1,15 @@
+{% if hasApiKey %}
+<div id="mailchimpSubribeWidget">
+    <div class="titleBar">
+        {{ 'lbl.Newsletter'|trans|ucfirst }}
+    </div>
+    {{ form_start(form) }}
+    <p>{{ 'msg.FillOutToSubscribe'|trans|ucfirst }}</p>
+        {{ form_row(form.name) }}
+        {{ form_row(form.subscriber) }}
+    <p>
+        <input id="mailchimpSubscribe" class="inputSubmit" type="submit" name="comment" value="{{ 'lbl.Subscribe'|trans|ucfirst }}" />
+    </p>
+  {{ form_end(form) }}
+</div>
+{% endif %}

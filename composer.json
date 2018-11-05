@@ -1,5 +1,0 @@
-{
-    "require": {
-        "zfr/zfr-mailchimp-bundle": "2.*"
-    }
-}

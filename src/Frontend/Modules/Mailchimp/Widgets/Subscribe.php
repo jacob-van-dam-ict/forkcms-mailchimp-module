@@ -2,49 +2,42 @@
 
 namespace Frontend\Modules\Mailchimp\Widgets;
 
-/*
- * This file is part of Fork CMS.
- *
- * For the full copyright and license information, please view the license
- * file that was distributed with this source code.
- */
-
+use Backend\Modules\Mailchimp\Domain\Subscribe\SubscribeType;
 use Frontend\Core\Engine\Base\Widget as FrontendBaseWidget;
-use Frontend\Core\Engine\Form as FrontendForm;
+use Symfony\Component\Form\Form;
 
 /**
  * This is a widget to subscribe to a mailinglist
  *
  * @author John Poelman <john.poelman@bloobz.be>
+ * @author Jacob van Dam <j.vandam@jvdict.nl>
  */
 class Subscribe extends FrontendBaseWidget
 {
     /**
      * Execute the extra
      */
-    public function execute()
+    public function execute(): void
     {
         parent::execute();
+
+        $hasApiKey = (bool)$this->get('fork.settings')->get($this->getModule(), 'apiKey', '');
+
+        $this->template->assign('form', $this->getForm()->createView());
+        $this->template->assign('hasApiKey', $hasApiKey);
+
+        $this->addCSS('Mailchimp.css');
+
         $this->loadTemplate();
-        $this->loadForm();
-        $this->parse();
     }
 
-    /**
-     * Load the form
-     */
-    private function loadForm()
+    private function getForm(): Form
     {
-        $this->frm = new FrontendForm('subscribe');
-        $this->frm->addText('subscriber')->setAttributes(array('required' => null));
-    }
+        // Load our form
+        $form = $this->createForm(
+            SubscribeType::class
+        );
 
-    /**
-     * Parse
-     */
-    private function parse()
-    {
-        $this->frm->parse($this->tpl);
-        $this->header->addCSS('/src/Frontend/Modules/Mailchimp/Layout/Css/Mailchimp.css');
+        return $form;
     }
 }

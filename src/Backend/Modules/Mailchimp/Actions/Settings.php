@@ -2,103 +2,128 @@
 
 namespace Backend\Modules\Mailchimp\Actions;
 
-/*
- * This file is part of Fork CMS.
- *
- * For the full copyright and license information, please view the license
- * file that was distributed with this source code.
- */
+use Backend\Core\Engine\Base\ActionEdit as BackendBaseActionEdit;
+use Backend\Core\Engine\Model as BackendModel;
+use Backend\Modules\Mailchimp\Domain\Settings\SettingsDataTransferObject;
+use Backend\Modules\Mailchimp\Domain\Settings\SettingsType;
+use Mailchimp\Mailchimp;
+use Symfony\Component\Form\Form;
 
- use Backend\Core\Engine\Base\ActionEdit as BackendBaseActionEdit;
- use Backend\Core\Engine\Authentication as BackendAuthentication;
- use Backend\Core\Engine\Model as BackendModel;
- use Backend\Core\Engine\Form as BackendForm;
-
- /**
+/**
  * This is settings file for the links module
  *
  * @author John Poelman <john.poelman@bloobz.be>
+ * @author Jacob van Dam <j.vandam@jvdict.nl>
  */
 class Settings extends BackendBaseActionEdit
 {
     /**
-     * Settings
-     *
-     * @var	array
-     */
-    private $settings = array();
-    
-    /**
      * Execute the action
      */
-    public function execute()
+    public function execute(): void
     {
         parent::execute();
-        $this->loadForm();
-        $this->validateForm();
-        $this->parse();
-        $this->display();
-    }
 
-    /**
-     * load the form
-     */
-    private function loadForm()
-    {
-        // check if user is almighty
-        $this->isGod = BackendAuthentication::getUser()->isGod();
-        
-        // create form instance
-        $this->frm = new BackendForm('settings');
-        
-        // fetch module settings
-        $this->settings = BackendModel::getModuleSettings('Mailchimp');
+        $form = $this->getForm();
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->template->assign('form', $form->createView());
+            $this->template->assign('apiKey', $this->getSetting('apiKey', ''));
 
-        // connect to mailchimp and get the lists
-        $mailchimp = $this->getContainer()->get('zfr_mail_chimp')->getClient();
-        $lists = $mailchimp->getLists();
+            $this->parse();
+            $this->display();
 
-        // loop the lists and add to key value array
-        $listItems = array();
-
-        if ($lists['total'] > 0) {
-            foreach ($lists['data'] as $l) {
-                $listItems[$l['id']] = $l['name'];
-            }
+            return;
         }
 
-        // add the formfields
-        $this->frm->addDropdown('list', $listItems, $this->settings['activeList']);
+        $this->saveSettings($form);
+
+        $this->redirect(
+            BackendModel::createUrlForAction(
+                'Settings',
+                null,
+                null,
+                [
+                    'report' => 'saved',
+                ]
+            )
+        );
+    }
+
+    private function getForm(): Form
+    {
+        $data = new SettingsDataTransferObject();
+        $data->apiKey = $this->getSetting('apiKey', '');
+        $data->activeList = $this->getSetting('activeList', '');
+        $data->status = $this->getSetting('status', SettingsDataTransferObject::STATUS_PENDING);
+
+        $form = $this->createForm(
+            SettingsType::class,
+            $data,
+            [
+                'lists' => $this->getLists(),
+            ]
+        );
+
+        $form->handleRequest($this->getRequest());
+
+        return $form;
+    }
+
+    private function saveSettings(Form $form)
+    {
+        $data = $form->getData();
+
+        $this->setSetting('apiKey', $data->apiKey);
+        $this->setSetting('activeList', $data->activeList);
+        $this->setSetting('status', $data->status);
     }
 
     /**
-     * Parse the form
+     * A short hand for the getter
+     *
+     * @param string $key
+     * @param mixed $default
+     *
+     * @return mixed
      */
-    protected function parse()
+    private function getSetting($key, $default = null)
     {
-        parent::parse();
+        return $this->get('fork.settings')->get($this->url->getModule(), $key, $default);
     }
 
     /**
-     * Validate the form
+     * A short hand for the setter
+     *
+     * @param string $key
+     * @param mixed $value
+     *
+     * @return mixed
      */
-    private function validateForm()
+    private function setSetting($key, $value)
     {
-        if ($this->frm->isSubmitted()) {
-            if ($this->frm->isCorrect()) {
-                // get the settings
-                $settings = array();
-                $settings['activeList'] = $this->frm->getField('list')->getValue();
-                
-                // save the new settings
-                BackendModel::setModuleSetting($this->getModule(), 'activeList', $settings['activeList']);
-                
-                // trigger event
-                BackendModel::triggerEvent($this->getModule(), 'after_saved_settings');
+        return $this->get('fork.settings')->set($this->url->getModule(), $key, $value);
+    }
 
-                // redirect to the settings page
-                $this->redirect(BackendModel::createURLForAction('settings') . '&report=saved');
-            }
+
+    /**
+     * Get the mailchimp lists
+     *
+     * @return array
+     */
+    private function getLists(): array
+    {
+        $apiKey = $this->getSetting('apiKey', '');
+        if (!$apiKey) {
+            return [];
         }
+
+        $lists = [];
+        $mailchimp = new Mailchimp($apiKey);
+
+        foreach ($mailchimp->get('/lists')['lists'] as $list) {
+            $lists[$list->name] = $list->id;
+        }
+
+        return $lists;
     }
 }

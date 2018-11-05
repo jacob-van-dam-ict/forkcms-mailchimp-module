@@ -12,10 +12,38 @@
       </item>
     </Core>
     <Mailchimp>
-        <item type="message" name="SelectList">
-            <translation language="nl"><![CDATA[selecteer de email lijst die je wenst te gebruiken.]]></translation>
-            <translation language="en"><![CDATA[select the mailing list you wish to use.]]></translation>
-        </item>
+      <item type="label" name="SelectList">
+        <translation language="nl"><![CDATA[selecteer de email lijst die je wenst te gebruiken.]]></translation>
+        <translation language="en"><![CDATA[select the mailing list you wish to use.]]></translation>
+      </item>
+      <item type="message" name="EnterApiKeyFirst">
+        <translation language="nl"><![CDATA[Voer eerst een API sleutel in voordat je een lijst kan selecteren.]]></translation>
+        <translation language="en"><![CDATA[Please enter API key before you can select a list.]]></translation>
+      </item>
+      <item type="label" name="ApiKey">
+        <translation language="nl"><![CDATA[API sleutel]]></translation>
+        <translation language="en"><![CDATA[API key]]></translation>
+      </item>
+      <item type="label" name="Status">
+        <translation language="nl"><![CDATA[status]]></translation>
+        <translation language="en"><![CDATA[status]]></translation>
+      </item>
+      <item type="label" name="Subscribed">
+        <translation language="nl"><![CDATA[ingeschreven]]></translation>
+        <translation language="en"><![CDATA[subscribed]]></translation>
+      </item>
+      <item type="label" name="Unsubscribed">
+        <translation language="nl"><![CDATA[uitgeschreven]]></translation>
+        <translation language="en"><![CDATA[unsubscribed]]></translation>
+      </item>
+      <item type="label" name="Cleaned">
+        <translation language="nl"><![CDATA[opgeschoond]]></translation>
+        <translation language="en"><![CDATA[cleaned]]></translation>
+      </item>
+      <item type="label" name="Pending">
+        <translation language="nl"><![CDATA[wachtende]]></translation>
+        <translation language="en"><![CDATA[pending]]></translation>
+      </item>
     </Mailchimp>
   </Backend>
   <Frontend>
@@ -24,8 +52,14 @@
         <translation language="nl"><![CDATA[inschrijven]]></translation>
         <translation language="en"><![CDATA[subscribe]]></translation>
       </item>
-    </Core>
-    <Mailchimp>
+      <item type="label" name="Name">
+        <translation language="nl"><![CDATA[name]]></translation>
+        <translation language="en"><![CDATA[name]]></translation>
+      </item>
+      <item type="message" name="Subscribed">
+        <translation language="nl"><![CDATA[U bent ingeschreven]]></translation>
+        <translation language="en"><![CDATA[You are subscribed]]></translation>
+      </item>
       <item type="label" name="Newsletter">
         <translation language="nl"><![CDATA[nieuwsbrief]]></translation>
         <translation language="en"><![CDATA[newsletter]]></translation>
@@ -34,6 +68,6 @@
         <translation language="nl"><![CDATA[vul je email adres in om je in te schrijven]]></translation>
         <translation language="en"><![CDATA[provide us with your email address to subscribe]]></translation>
       </item>
-    </Mailchimp>
+    </Core>
   </Frontend>
 </locale>

@@ -1,58 +1,54 @@
-/*
- * This file is part of Fork CMS.
- *
- * For the full copyright and license information, please view the license
- * file that was distributed with this source code.
- */
-
 /**
  * Interaction for the mailchimp module
  *
  * @author John Poelman <john.poelman@bloobz.be>
+ * @author Jacob van Dam <j.vandam@jvdict.nl>
  */
-jsFrontend.Mailchimp =
-{
-    // constructor
-    init: function() {
-        $('.resultMessage').hide();
-        jsFrontend.Mailchimp.ajax();
-    },
+jsFrontend.Mailchimp = {
+  // constructor
+  init: function () {
+    jsFrontend.Mailchimp.ajax()
+  },
 
-ajax: function() {
+  ajax: function () {
+    $('#mailchimpSubscribe').click(function (e) {
+        e.preventDefault()
 
+        // vars
+        var data = {
+            fork: {module: 'Mailchimp', action: 'Subscription'}
+          },
+          widget = $('#mailchimpSubribeWidget')
 
-    $('#mailchimpSubscribe').click(
-        function () {
+        widget.find('input').each(function () {
+          data[$(this).attr('name')] = $(this).val()
+        })
 
-            // vars
-            var subscriber = $('#subscriber').val();
+        widget.find('.has-error').removeClass('has-error')
+        widget.find('.error').remove()
 
-            $.ajax
-            ({
-                data: {
-                    fork: {module: 'Mailchimp', action: 'Subscription'},
-                    subscriber: subscriber
-                },
+        $.ajax({
+          data: data,
+          error: function (response) {
+            $.each(response.responseJSON.data.errors, function (name, errors) {
+              var field = $('#subscribe_' + name)
 
-                success: function (data) {
-                    // alert the user of we're in debug mode and
-                    if (data.code != 200 && jsFrontend.debug) {
-                        alert(data.message);
-                    }
-                    else {
-                        // show the success modal
-                        $('.resultMessage').show();
-                    }
-                }
-            });
+              field.addClass('has-error')
+              field.parent().addClass('has-error')
 
-            // return
-            return false;
-        }
-    );
-},
-
-eoo: true
+              $.each(errors, function (key, error) {
+                field.after($('<span>').addClass('error').html(error))
+              })
+            })
+          },
+          success: function (response) {
+            widget.find('form').replaceWith($('<p>').html(response.data.message))
+          }
+        })
+      }
+    )
+  },
+  eoo: true
 }
 
-jsFrontend.Mailchimp.init();
+jsFrontend.Mailchimp.init()

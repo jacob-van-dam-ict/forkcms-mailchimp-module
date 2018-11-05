@@ -2,88 +2,95 @@
 
 namespace Frontend\Modules\Mailchimp\Ajax;
 
-/*
-* This file is part of Fork CMS.
-*
-* For the full copyright and license information, please view the license
-* file that was distributed with this source code.
-*/
-
+use Backend\Modules\Mailchimp\Domain\Subscribe\Event\Subscribed;
+use Backend\Modules\Mailchimp\Domain\Subscribe\SubscribeDataTransferObject;
+use Backend\Modules\Mailchimp\Domain\Subscribe\SubscribeType;
 use Frontend\Core\Engine\Base\AjaxAction as FrontendBaseAJAXAction;
-use Frontend\Core\Engine\Model as FrontendModel;
+use Frontend\Core\Language\Language;
+use Symfony\Component\Form\Form;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
-* This is the subscribe-action, it will subscribe a user to the mailinglist
-*
-* @author John Poelman <john.poelman@bloobz.be>
-*/
+ * This is the subscribe-action, it will subscribe a user to the mailinglist
+ *
+ * @author John Poelman <john.poelman@bloobz.be>
+ * @author Jacob van Dam <j.vandam@jvdict.nl>
+ */
 class Subscription extends FrontendBaseAJAXAction
 {
     /**
-     * The listID
+     * {@inheritdoc}
      */
-    private $listID;
-
-    /**
-     * The email
-     */
-    private $email;
-
-    /**
-     * Execute the action
-     */
-    public function execute()
+    public function execute(): void
     {
         parent::execute();
 
-        $this->getData();
-        $this->validateForm();
-        $this->makeSubscription();
-    }
+        $form = $this->getForm();
 
-    /**
-     * Gets the data
-     */
-    private function getData()
-    {
-        $this->email = \SpoonFilter::getPostValue('subscriber', null, '');
-        $this->listID = (string) FrontendModel::getModuleSetting('Mailchimp', 'activeList');
-    }
+        if (!$form->isSubmitted() || !$form->isValid()) {
+            $this->output(
+                Response::HTTP_BAD_REQUEST,
+                [
+                    'errors' => $this->getFormErrors($form),
+                ]
+            );
 
-    /**
-     * Makes the api call to subscribe the user
-     */
-    private function makeSubscription()
-    {
-        // get the mailchimp client
-        $mailchimp = $this->getContainer()->get('zfr_mail_chimp')->getClient();
+            return;
+        }
 
-        // make the subscription
-        $data = array(
-            'id' => (string)$this->listID,
-            'email' => array('email' => $this->email),
-            'update_existing' =>  true
+        $this->get('event_dispatcher')->dispatch(
+            Subscribed::EVENT_NAME,
+            new Subscribed($form->getData())
         );
 
-        // make the call
-        if ($mailchimp->subscribe($data)) {
-            $this->output(self::OK);
-        } else {
-            $this->output(self::OK);
+
+        $this->output(
+            Response::HTTP_OK,
+            [
+                'message' => Language::getMessage('Subscribed'),
+            ]
+        );
+    }
+
+    private function getForm(): Form
+    {
+        // Load our form
+        $form = $this->createForm(
+            SubscribeType::class,
+            new SubscribeDataTransferObject()
+        );
+
+        // Assign current request to form
+        $form->handleRequest($this->getRequest());
+
+        return $form;
+    }
+
+    private function getFormErrors(Form $form): array
+    {
+        $errors = [];
+
+        foreach ($form->all() as $field) {
+            $errors[$field->getName()] = [];
+            foreach ($field->getErrors() as $error) {
+                $errors[$field->getName()][] = $error->getMessage();
+            }
         }
+
+        return $errors;
     }
 
     /**
-     * Validates the given data
+     * Creates and returns a Form instance from the type of the form.
+     *
+     * @param string $type FQCN of the form type class i.e: MyClass::class
+     * @param mixed $data The initial data for the form
+     * @param array $options Options for the form
+     *
+     * @return Form
      */
-    private function validateForm()
+    private function createForm(string $type, $data = null, array $options = []): Form
     {
-        // validate
-        if (!\SpoonFilter::isEmail($this->email)) {
-            $this->output(self::ERROR);
-        }
-        if ($this->email == '') {
-            $this->output(self::ERROR);
-        }
+        return $this->get('form.factory')->create($type, $data, $options);
     }
 }

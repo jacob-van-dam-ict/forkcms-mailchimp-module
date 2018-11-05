@@ -1,0 +1,7 @@
+services:
+    mailchimp.event.subscribed:
+        class: Backend\Modules\Mailchimp\Domain\Subscribe\EventListener\Subscribed
+        arguments:
+            - "@fork.settings"
+        tags:
+            - { name: kernel.event_listener, event: mailchimp.event.subscribe.subcribed, method: onSubscribe }

@@ -2,19 +2,14 @@
 
 namespace Backend\Modules\Mailchimp\Installer;
 
-/*
- * This file is part of Fork CMS.
- *
- * For the full copyright and license information, please view the license
- * file that was distributed with this source code.
- */
-
 use Backend\Core\Installer\ModuleInstaller;
+use Common\ModuleExtraType;
 
 /**
  * Installer for the mailchimp module
  *
  * @author John Poelman <john.poelman@bloobz.be>
+ * @author Jacob van Dam <j.vandam@jvdict.nl>
  */
 class Installer extends ModuleInstaller
 {
@@ -33,9 +28,10 @@ class Installer extends ModuleInstaller
         $this->setModuleRights(1, 'Mailchimp');
 
         // add extra's
-        $this->insertExtra('Mailchimp', 'widget', 'Subscribe', null, null, 'N', 1000);
+        $this->insertExtra('Mailchimp',  ModuleExtraType::widget(), 'Subscribe', 'Subscribe');
 
         // settings
+        $this->setSetting('Mailchimp', 'apiKey', '');
         $this->setSetting('Mailchimp', 'activeList', '');
 
         // settings navigation
